@@ -4,6 +4,9 @@
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
+static SDL_FPoint line_points[] = {
+    {100, 100}, {80, 110}, {100, 120}, {100, 100}
+};
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -32,9 +35,10 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
-    static const SDL_FPoint line_points[] = {
-        {100, 100}, {80, 110}, {100, 120}, {100, 100}
-    };
+    for (int i = 0; i < SDL_arraysize(line_points); i++) {
+        line_points[i].x += 0.01;
+        line_points[i].y += 0.01;
+    }
     SDL_SetRenderDrawColor(renderer, 100, 100, 100, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 
