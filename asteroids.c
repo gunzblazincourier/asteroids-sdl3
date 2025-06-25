@@ -32,6 +32,17 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
+    static const SDL_FPoint line_points[] = {
+        {100, 100}, {80, 110}, {100, 120}, {100, 100}
+    };
+    SDL_SetRenderDrawColor(renderer, 100, 100, 100, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(renderer);
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderLines(renderer, line_points, SDL_arraysize(line_points));
+    SDL_RenderPresent(renderer);
+
+
     return SDL_APP_CONTINUE;
 }
 
