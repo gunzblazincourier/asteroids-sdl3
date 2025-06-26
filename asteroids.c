@@ -5,6 +5,7 @@
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
+static Uint64 last_time = 0;
 
 static bool go = false;
 static int rotate = 0;
@@ -59,17 +60,20 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
+    const Uint64 now = SDL_GetTicks();
+    const float elapsed = ((float) (now - last_time)) / 1000.0f;
+
     static SDL_FPoint line_points_final[] = {
         {300, 300}, {310, 280}, {320, 300}, {300, 300}
     };
     if (go == true) {
-        center_x += 0.01;
-        center_y += 0.01;
+        center_x += 40 * elapsed;
+        center_y += 40 * elapsed;
         for (int i = 0; i < SDL_arraysize(line_points); i++) {
-            line_points[i].x += 0.01;
-            line_points[i].y += 0.01;
-            line_points_final[i].x += 0.01;
-            line_points_final[i].y += 0.01;
+            line_points[i].x += 40 * elapsed;
+            line_points[i].y += 40 * elapsed;
+            line_points_final[i].x += 40 * elapsed;
+            line_points_final[i].y += 40 * elapsed;
         }
     }
 
@@ -78,12 +82,12 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
             //if (angle <= 0.0) {
             //    angle = 360.0;
             //}
-            angle -= 0.0001;
+            angle -= 5 * elapsed;
         } else {
             //if (angle >= 360.0) {
             //    angle = 0.0;
             //}
-            angle += 0.0001;
+            angle += 5 * elapsed;
         }
         printf("%f\n", angle);
 
@@ -92,6 +96,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
             line_points_final[i].y = center_y + ((line_points[i].y-center_y)*SDL_cosf(angle)) - ((line_points[i].x-center_x)*SDL_sinf(angle));
         }
     }
+    last_time = now;
+
     SDL_SetRenderDrawColor(renderer, 100, 100, 100, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 
