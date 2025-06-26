@@ -84,8 +84,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
         printf("%f\n", angle);
 
         for (int i = 0; i < SDL_arraysize(line_points); i++) {
-            line_points_final[i].x = line_points[i].x + ((line_points[i].x-center_x)*SDL_cosf(angle)) + ((line_points[i].y-center_y)*SDL_sinf(angle));
-            line_points_final[i].y = line_points[i].y + ((line_points[i].y-center_y)*SDL_cosf(angle)) - ((line_points[i].y-center_y)*SDL_sinf(angle));
+            line_points_final[i].x = center_x + ((line_points[i].x-center_x)*SDL_cosf(angle)) + ((line_points[i].y-center_y)*SDL_sinf(angle));
+            line_points_final[i].y = center_y + ((line_points[i].y-center_y)*SDL_cosf(angle)) - ((line_points[i].x-center_x)*SDL_sinf(angle));
         }
     }
     SDL_SetRenderDrawColor(renderer, 100, 100, 100, SDL_ALPHA_OPAQUE);
