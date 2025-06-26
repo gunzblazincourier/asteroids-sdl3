@@ -63,9 +63,13 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
         {300, 300}, {310, 280}, {320, 300}, {300, 300}
     };
     if (go == true) {
+        center_x += 0.01;
+        center_y += 0.01;
         for (int i = 0; i < SDL_arraysize(line_points); i++) {
             line_points[i].x += 0.01;
             line_points[i].y += 0.01;
+            line_points_final[i].x += 0.01;
+            line_points_final[i].y += 0.01;
         }
     }
 
