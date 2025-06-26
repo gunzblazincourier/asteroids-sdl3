@@ -1,13 +1,21 @@
 #define SDL_MAIN_USE_CALLBACKS 1
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <stdio.h>
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
+
 static bool go = false;
+static int rotate = 0;
+static float angle = 0.0;
+
 static SDL_FPoint line_points[] = {
-    {100, 100}, {80, 110}, {100, 120}, {100, 100}
+    {300, 300}, {310, 280}, {320, 300}, {300, 300}
 };
+
+static float center_x = 310;
+static float center_y = 290;
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -33,8 +41,15 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
         if (event->key.scancode == SDL_SCANCODE_UP) {
             go = true;
         }
+
+        if (event->key.scancode == SDL_SCANCODE_LEFT) {
+            rotate = 1;
+        } else if (event->key.scancode == SDL_SCANCODE_RIGHT){
+            rotate = -1;
+        }
     } else {
         go = false;
+        rotate = 0;
     }
 
     if (event->type == SDL_EVENT_QUIT) {
@@ -44,17 +59,40 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
+    static SDL_FPoint line_points_final[] = {
+        {300, 300}, {310, 280}, {320, 300}, {300, 300}
+    };
     if (go == true) {
         for (int i = 0; i < SDL_arraysize(line_points); i++) {
             line_points[i].x += 0.01;
             line_points[i].y += 0.01;
         }
     }
+
+    if (rotate != 0) {
+        if (rotate > 0) {
+            //if (angle <= 0.0) {
+            //    angle = 360.0;
+            //}
+            angle -= 0.0001;
+        } else {
+            //if (angle >= 360.0) {
+            //    angle = 0.0;
+            //}
+            angle += 0.0001;
+        }
+        printf("%f\n", angle);
+
+        for (int i = 0; i < SDL_arraysize(line_points); i++) {
+            line_points_final[i].x = line_points[i].x + ((line_points[i].x-center_x)*SDL_cosf(angle)) + ((line_points[i].y-center_y)*SDL_sinf(angle));
+            line_points_final[i].y = line_points[i].y + ((line_points[i].y-center_y)*SDL_cosf(angle)) - ((line_points[i].y-center_y)*SDL_sinf(angle));
+        }
+    }
     SDL_SetRenderDrawColor(renderer, 100, 100, 100, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-    SDL_RenderLines(renderer, line_points, SDL_arraysize(line_points));
+    SDL_RenderLines(renderer, line_points_final, SDL_arraysize(line_points_final));
     SDL_RenderPresent(renderer);
 
 
