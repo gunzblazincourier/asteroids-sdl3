@@ -9,7 +9,7 @@ static Uint64 last_time = 0;
 
 static bool go = false;
 static int rotate = 0;
-static float angle = 0.0;
+static float angle = 0;
 
 static SDL_FPoint line_points[] = {
     {300, 300}, {310, 280}, {320, 300}, {300, 300}
@@ -44,9 +44,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
         }
 
         if (event->key.scancode == SDL_SCANCODE_LEFT) {
-            rotate = 1;
-        } else if (event->key.scancode == SDL_SCANCODE_RIGHT){
             rotate = -1;
+        } else if (event->key.scancode == SDL_SCANCODE_RIGHT){
+            rotate = 1;
         }
     } else {
         go = false;
@@ -67,13 +67,13 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
         {300, 300}, {310, 280}, {320, 300}, {300, 300}
     };
     if (go == true) {
-        center_x += 40 * elapsed;
-        center_y += 40 * elapsed;
+        center_x += 40 * SDL_cosf(angle) * elapsed;
+        center_y -= 40 * SDL_sinf(angle) * elapsed;
         for (int i = 0; i < SDL_arraysize(line_points); i++) {
-            line_points[i].x += 40 * elapsed;
-            line_points[i].y += 40 * elapsed;
-            line_points_final[i].x += 40 * elapsed;
-            line_points_final[i].y += 40 * elapsed;
+            line_points[i].x += 40 * SDL_cosf(angle) * elapsed;
+            line_points[i].y -= 40 * SDL_sinf(angle) * elapsed;
+            line_points_final[i].x += 40 * SDL_cosf(angle) * elapsed;
+            line_points_final[i].y -= 40 * SDL_sinf(angle) * elapsed;
         }
     }
 
