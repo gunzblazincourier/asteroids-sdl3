@@ -12,11 +12,11 @@ static int rotate = 0;
 static float angle = 0;
 
 static SDL_FPoint line_points[] = {
-    {300, 300}, {310, 280}, {320, 300}, {300, 300}
+    {300, 300}, {320, 310}, {300, 320}, {300, 300}
 };
 
 static float center_x = 310;
-static float center_y = 290;
+static float center_y = 310;
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -64,7 +64,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     const float elapsed = ((float) (now - last_time)) / 1000.0f;
 
     static SDL_FPoint line_points_final[] = {
-        {300, 300}, {310, 280}, {320, 300}, {300, 300}
+        {300, 300}, {320, 310}, {300, 320}, {300, 300}
     };
     if (go == true) {
         center_x += 40 * SDL_cosf(angle) * elapsed;
