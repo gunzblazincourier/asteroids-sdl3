@@ -10,6 +10,7 @@ static Uint64 last_time = 0;
 static bool go = false;
 static int rotate = 0;
 static float angle = 0.0;
+static float angle_a = 0.0;
 static float acceleration = 0.0;
 
 static SDL_FPoint line_points[] = {
@@ -69,15 +70,16 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
         {300, 300}, {320, 310}, {300, 320}, {300, 300}
     };
 
-    center_x += MAX_SPEED * acceleration * SDL_cosf(angle) * elapsed;
-    center_y -= MAX_SPEED * acceleration * SDL_sinf(angle) * elapsed;
+    center_x += MAX_SPEED * acceleration * SDL_cosf(angle_a) * elapsed;
+    center_y -= MAX_SPEED * acceleration * SDL_sinf(angle_a) * elapsed;
     for (int i = 0; i < SDL_arraysize(line_points); i++) {
-        line_points[i].x += MAX_SPEED * acceleration * SDL_cosf(angle) * elapsed;
-        line_points[i].y -= MAX_SPEED * acceleration * SDL_sinf(angle) * elapsed;
-        line_points_final[i].x += MAX_SPEED * acceleration * SDL_cosf(angle) * elapsed;
-        line_points_final[i].y -= MAX_SPEED * acceleration * SDL_sinf(angle) * elapsed;
+        line_points[i].x += MAX_SPEED * acceleration * SDL_cosf(angle_a) * elapsed;
+        line_points[i].y -= MAX_SPEED * acceleration * SDL_sinf(angle_a) * elapsed;
+        line_points_final[i].x += MAX_SPEED * acceleration * SDL_cosf(angle_a) * elapsed;
+        line_points_final[i].y -= MAX_SPEED * acceleration * SDL_sinf(angle_a) * elapsed;
     }
     if (go == true) {
+        angle_a = angle;
         if (acceleration < 1) {
             acceleration += 3 * elapsed;
         }
