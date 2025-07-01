@@ -9,7 +9,8 @@ static Uint64 last_time = 0;
 
 static bool go = false;
 static int rotate = 0;
-static float angle = 0;
+static float angle = 0.0;
+static float acceleration = 0.0;
 
 static SDL_FPoint line_points[] = {
     {300, 300}, {320, 310}, {300, 320}, {300, 300}
@@ -20,6 +21,8 @@ static float center_y = 310;
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
+
+#define MAX_SPEED 200
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
     SDL_SetAppMetadata("Asteroids", "1.0", "asteroids-sdl3");
@@ -62,18 +65,25 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 SDL_AppResult SDL_AppIterate(void *appstate) {
     const Uint64 now = SDL_GetTicks();
     const float elapsed = ((float) (now - last_time)) / 1000.0f;
-
     static SDL_FPoint line_points_final[] = {
         {300, 300}, {320, 310}, {300, 320}, {300, 300}
     };
+
+    center_x += MAX_SPEED * acceleration * SDL_cosf(angle) * elapsed;
+    center_y -= MAX_SPEED * acceleration * SDL_sinf(angle) * elapsed;
+    for (int i = 0; i < SDL_arraysize(line_points); i++) {
+        line_points[i].x += MAX_SPEED * acceleration * SDL_cosf(angle) * elapsed;
+        line_points[i].y -= MAX_SPEED * acceleration * SDL_sinf(angle) * elapsed;
+        line_points_final[i].x += MAX_SPEED * acceleration * SDL_cosf(angle) * elapsed;
+        line_points_final[i].y -= MAX_SPEED * acceleration * SDL_sinf(angle) * elapsed;
+    }
     if (go == true) {
-        center_x += 40 * SDL_cosf(angle) * elapsed;
-        center_y -= 40 * SDL_sinf(angle) * elapsed;
-        for (int i = 0; i < SDL_arraysize(line_points); i++) {
-            line_points[i].x += 40 * SDL_cosf(angle) * elapsed;
-            line_points[i].y -= 40 * SDL_sinf(angle) * elapsed;
-            line_points_final[i].x += 40 * SDL_cosf(angle) * elapsed;
-            line_points_final[i].y -= 40 * SDL_sinf(angle) * elapsed;
+        if (acceleration < 1) {
+            acceleration += 3 * elapsed;
+        }
+    } else {
+        if (acceleration > 0) {
+            acceleration -= 1 * elapsed;
         }
     }
 
